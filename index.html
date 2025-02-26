@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Streams Community Praise & Worship Team</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+        header { background: #2c3e50; color: white; padding: 20px; font-size: 26px; text-align: center; font-weight: bold; }
+        nav { margin: 20px; }
+        nav a { margin: 10px; text-decoration: none; color: #333; font-size: 18px; }
+        section { padding: 20px; max-width: 1200px; margin: auto; line-height: 1.6; }
+        table { width: 100%; margin: 20px auto; border-spacing: 0;  border-collapse: collapse; background: white; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #34495e; color: white; font-weight: bold; }
+        footer { background: #333; color: white; padding: 15px; margin-top: 30px; text-align: center; }
+        .pagination { margin-top: 10px; }
+        .pagination button { padding: 5px 10px; margin: 2px; }
+    </style>
+    <script>
+        let currentPage = 1;
+        const rowsPerPage = 30;
+        let allRows = [];
+
+        function generateAllDates() {
+            let startDate = new Date("2023-01-08");
+            let endDate = new Date("2025-02-23");
+            let dateList = new Set();
+            while (startDate <= endDate) {
+                let formattedDate = startDate.toISOString().split('T')[0].replace(/-/g, '');
+                dateList.add(formattedDate);
+                startDate.setDate(startDate.getDate() + 7);
+            }
+            return dateList;
+        }
+
+        async function fetchGoogleDriveFiles(pageToken = "") {
+            const folderId = "1jvXm4TKxbRFtBdpO4awvsr7UMe_flDL6";
+            const apiKey = "AIzaSyAqpO2ie6Dxfm6xTZbkSO6infB9v-fKHq4";
+            let driveUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents and mimeType='application/vnd.google-apps.folder'&key=${apiKey}&fields=files(id,name),nextPageToken`;
+            if (pageToken) driveUrl += `&pageToken=${pageToken}`;
+            
+            try {
+                const response = await fetch(driveUrl);
+                const data = await response.json();
+                                return data;
+            } catch (error) {
+                console.error("Error fetching Google Drive files:", error);
+                return { error: "Failed to load Google Drive data." };
+            }
+        }
+
+        async function getGoogleDriveFolders() {
+            let songTable = document.getElementById("weekly-songs");
+            songTable.innerHTML = "";
+            allRows = [];
+            let expectedDates = generateAllDates();
+            let foundDates = new Map();
+            let pageToken = "";
+
+            do {
+                let data = await fetchGoogleDriveFiles(pageToken);
+                if (!data || data.error) {
+                    songTable.innerHTML = `<tr><td colspan='4'>Error: ${data.error || "Unable to fetch data."}</td></tr>`;
+                    return;
+                }
+                if (!data.files) {
+                    songTable.innerHTML = `<tr><td colspan='4'>No folders found. Please check your Google Drive permissions.</td></tr>`;
+                    return;
+                }
+                
+                data.files.forEach(file => {
+                                        const match = file.name.match(/(2023\d{4}|2024\d{4}|2025\d{4})_(.*?) \((.*?)\)_(.*?)$/);
+                    if (match) {
+                        allRows.push({ date: match[1], leader: match[2], songs: match[3], key: match[4], folderId: file.id });
+                        foundDates.set(match[1], file.id);
+                    }
+                });
+                pageToken = data.nextPageToken || "";
+            } while (pageToken);
+            
+            expectedDates.forEach(date => {
+                if (!foundDates.has(date)) {
+                    console.warn("Missing week:", date);
+                    allRows.push({ date: date, leader: "N/A", songs: "No songs found", folderId: null });
+                }
+            });
+            
+            allRows.sort((a, b) => b.date.localeCompare(a.date));
+                        displayPage(1);
+        }
+
+        function displayPage(page) {
+            let searchQuery = document.getElementById("search-box").value.toLowerCase().trim();
+            let selectedLeader = document.getElementById("worship-leader-filter").value;
+            let filteredRows = allRows.filter(row => {
+                let normalizedSearchQuery = searchQuery.replace(/祢/g, '你').replace(/祂/g, '他');
+                let normalizedSongs = row.songs.replace(/祢/g, '你').replace(/祂/g, '他');
+                let matchesSearch = normalizedSongs.toLowerCase().includes(normalizedSearchQuery);
+                let matchesFilter = selectedLeader === "" || row.leader === selectedLeader || (selectedLeader === "Miscellaneous" && !["Eddie", "James", "Shirly", "Theresa", "Vanessa", "Yun Ru", "-"].includes(row.leader));
+                return matchesSearch && matchesFilter;
+            });
+            let totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+            if (page > totalPages) page = totalPages > 0 ? totalPages : 1;
+            currentPage = page;
+            let start = (page - 1) * rowsPerPage;
+            let end = start + rowsPerPage;
+            let paginatedRows = filteredRows.slice(start, end);
+            
+            let songTable = document.getElementById("weekly-songs");
+            songTable.innerHTML = "";
+            if (paginatedRows.length === 0) {
+                songTable.innerHTML = `<tr><td colspan='4'>No data available.</td></tr>`;
+                return;
+            }
+            
+            paginatedRows.forEach(row => {
+                let folderLink = row.folderId ? `<a href='https://drive.google.com/drive/folders/${row.folderId}' target='_blank'>Chords</a>` : "No folder";
+                songTable.innerHTML += `<tr><td>${row.date}</td><td>${row.leader}</td><td>${row.songs}</td>
+                <td>${row.key ? row.key : ''}</td><td>${folderLink}</td></tr>`;
+            });
+            document.getElementById("page-info").textContent = `Page ${currentPage} of ${totalPages > 0 ? totalPages : 1}`;
+        }
+
+        function searchSongs() {
+            displayPage(1);
+        }
+           
+        function filterSongs() {
+    displayPage(1);
+}
+            
+        function changePage(step) {
+            let totalPages = Math.ceil(allRows.length / rowsPerPage);
+            currentPage += step;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            displayPage(currentPage);
+        }
+
+        document.addEventListener("DOMContentLoaded", async function() {
+    await getGoogleDriveFolders();
+        displayPage(1);
+});
+    </script>
+</head>
+<body>
+    <header>Living Streams Community Praise & Worship Team</header>
+    <section id="songs" style="text-align: left; padding-left: 10%; width: 80%;">
+        <h2>Weekly Song Lists</h2>
+        <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%; margin-bottom: 15px;">
+            <div style="flex: 1;">
+                
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%; margin-bottom: 15px;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; width: 100%;">
+            <div style="display: flex; justify-content: flex-start; align-items: center; width: 100%;">
+                <label for="search-box" style="display: inline-block; width: 180px;">Search:</label>
+                <input type="text" id="search-box" onkeyup="searchSongs()" placeholder="Search songs..." style="padding: 5px; margin-left: 10px;">
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="worship-leader-filter" style="display: inline-block; width: 180px;">Filter by Worship Leader:</label>
+                <select id="worship-leader-filter" onchange="filterSongs()">
+                    <option value="">ALL</option>
+                    <option value="Eddie">Eddie</option>
+                    <option value="James">James</option>
+                    <option value="Shirly">Shirly</option>
+                    <option value="Theresa">Theresa</option>
+                    <option value="Vanessa">Vanessa</option>
+                    <option value="Yun Ru">Yun Ru</option>
+                    <option value="Miscellaneous">MISCELLANEOUS</option>
+                </select>
+            </div>
+            
+        <div style="margin-top: 0px;">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Worship Leader</th>
+                    <th>Songs</th>
+                    <th>Key</th>
+                    <th>Files</th>
+                </tr>
+            </thead>
+            <tbody id="weekly-songs">
+                <tr><td colspan="4">Loading weekly songs...</td></tr>
+            </tbody>
+        </table>
+        <div class="pagination" style="text-align: center; margin-top: 0px; display: flex; justify-content: center; gap: 0px; margin-top: 0; padding-top: 0;">
+        <div class="pagination">
+            <button onclick="changePage(-1)">Previous</button>
+            <span id="page-info">Page 1</span>
+            <button onclick="changePage(1)">Next</button>
+        </div>
+    </section>
+    <section id="resources" style="text-align: left; padding-left: 10%; width: 80%;">
+        <h2>Resources</h2>
+        
+        <ul id="resources-list" style="line-height: 1.8;">
+        <li>Loading resources...</li>
+    </ul>
+    <script>
+        async function fetchResourceFolders(pageToken = "") {
+            const resourceFolderId = "1jvXm4TKxbRFtBdpO4awvsr7UMe_flDL6";
+            const apiKey = "AIzaSyAqpO2ie6Dxfm6xTZbkSO6infB9v-fKHq4";
+            let driveUrl = `https://www.googleapis.com/drive/v3/files?q='${resourceFolderId}' in parents and mimeType='application/vnd.google-apps.folder'&key=${apiKey}&fields=files(id,name),nextPageToken`;
+            if (pageToken) driveUrl += `&pageToken=${pageToken}`;
+            
+            try {
+                const response = await fetch(driveUrl);
+                return await response.json();
+            } catch (error) {
+                console.error("Error fetching Google Drive resources:", error);
+                return { error: "Failed to load resource data." };
+            }
+        }
+        
+        async function getResourceFolders() {
+            let resourceList = document.getElementById("resources-list");
+            resourceList.innerHTML = "";
+            let pageToken = "";
+            
+            do {
+                let data = await fetchResourceFolders(pageToken);
+                if (!data || data.error) {
+                    resourceList.innerHTML = `<li>Error: ${data.error || "Unable to fetch data."}</li>`;
+                    return;
+                }
+                if (!data.files) {
+                    resourceList.innerHTML = `<li>No resource folders found.</li>`;
+                    return;
+                }
+                
+                const orderedResources = [
+                    "敬拜团时间表 LSC Worship Team Schedule",
+                    "敬拜团指南 LSC Worship Team Guideline",
+                    "敬拜团乐手指南 LSC Musicians Guideline",
+                    "约书亚乐团歌谱 Joshua Band OFFICIAL CHORDS",
+                    "赞美之泉歌谱 Stream of Praise OFFICIAL CHORDS",
+                    "赞美之泉敬拜工作坊 Stream of Praise Worship Workshop",
+                    "Muititrack.com CHORDS"
+                ];
+                
+                let resourceMap = new Map();
+                data.files.forEach(file => {
+                    if (file.name.startsWith("_")) {
+                        let folderName = file.name.substring(1);
+                        resourceMap.set(folderName, file.id);
+                    }
+                });
+                
+                orderedResources.forEach(name => {
+                    if (resourceMap.has(name)) {
+                        resourceList.insertAdjacentHTML("beforeend", `<li><a href='https://drive.google.com/drive/folders/${resourceMap.get(name)}' target='_blank'>${name}</a></li>`);
+                    }
+                });
+                
+                if (resourceMap.size === 0) {
+                    resourceList.innerHTML = `<li>No resources available.</li>`;
+                }
+                
+                pageToken = data.nextPageToken || "";
+            } while (pageToken);
+        }
+        
+        document.addEventListener("DOMContentLoaded", getResourceFolders);
+    </script>
+    </section>
+</body>
+</html>
