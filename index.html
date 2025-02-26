@@ -36,7 +36,7 @@
 
         async function fetchGoogleDriveFiles(pageToken = "") {
             const folderId = "1jvXm4TKxbRFtBdpO4awvsr7UMe_flDL6";
-            const apiKey = "AIzaSyAqpO2ie6Dxfm6xTZbkSO6infB9v-fKHq4";
+            const apiKey = "AIzaSyA2kkxGc88rl6rEBNYhkV2ttX4NB-c2Fcw";
             let driveUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents and mimeType='application/vnd.google-apps.folder'&key=${apiKey}&fields=files(id,name),nextPageToken`;
             if (pageToken) driveUrl += `&pageToken=${pageToken}`;
             
@@ -204,7 +204,7 @@
     <script>
         async function fetchResourceFolders(pageToken = "") {
             const resourceFolderId = "1jvXm4TKxbRFtBdpO4awvsr7UMe_flDL6";
-            const apiKey = "AIzaSyAqpO2ie6Dxfm6xTZbkSO6infB9v-fKHq4";
+            const apiKey = "AIzaSyA2kkxGc88rl6rEBNYhkV2ttX4NB-c2Fcw";
             let driveUrl = `https://www.googleapis.com/drive/v3/files?q='${resourceFolderId}' in parents and mimeType='application/vnd.google-apps.folder'&key=${apiKey}&fields=files(id,name),nextPageToken`;
             if (pageToken) driveUrl += `&pageToken=${pageToken}`;
             
