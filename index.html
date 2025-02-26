@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Living Streams Community Praise & Worship Team</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; overflow-x: hidden; }
         header { background: #2c3e50; color: white; padding: 20px; font-size: 26px; text-align: center; font-weight: bold; }
         nav { margin: 20px; }
         nav a { margin: 10px; text-decoration: none; color: #333; font-size: 18px; }
@@ -17,7 +17,8 @@
         .pagination { margin-top: 10px; }
         .pagination button { padding: 5px 10px; margin: 2px; }
     @media (max-width: 768px) {
-        html, body { overflow-x: auto; }
+        html, body { overflow-x: hidden; overflow-y: auto; }
+
             body { font-size: 16px; }
             section { padding: 10px; width: 95%; }
             table { display: block; overflow-x: auto; white-space: nowrap; }
