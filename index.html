@@ -66,6 +66,7 @@
         }
 
         async function getGoogleDriveFolders() {
+            console.log("Fetching Google Drive folders...");
             let songTable = document.getElementById("weekly-songs");
             songTable.innerHTML = "";
             allRows = [];
@@ -75,6 +76,7 @@
 
             do {
                 let data = await fetchGoogleDriveFiles(pageToken);
+                console.log("Google Drive API Response:", data);
                 if (!data || data.error) {
                     songTable.innerHTML = `<tr><td colspan='4'>Error: ${data.error || "Unable to fetch data."}</td></tr>`;
                     return;
