@@ -5,39 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Living Streams Community Praise & Worship Team</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; overflow-x: hidden; }
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
         header { background: #2c3e50; color: white; padding: 20px; font-size: 26px; text-align: center; font-weight: bold; }
         nav { margin: 20px; }
         nav a { margin: 10px; text-decoration: none; color: #333; font-size: 18px; }
         section { padding: 20px; max-width: 1200px; margin: auto; line-height: 1.6; }
-        table { width: 100%; margin: 20px auto; border-spacing: 0; border-collapse: collapse; table-layout: fixed; word-wrap: break-word; } background: white; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
+        table { width: 100%; margin: 20px auto; border-spacing: 0;  border-collapse: collapse; background: white; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #34495e; color: white; font-weight: bold; }
         footer { background: #333; color: white; padding: 15px; margin-top: 30px; text-align: center; }
         .pagination { margin-top: 10px; }
         .pagination button { padding: 5px 10px; margin: 2px; }
-    
-        th, td { word-wrap: break-word; white-space: normal; }
-        html, body { overflow-x: auto; overflow-y: auto; }
-
-            body { font-size: 16px; }
-            section { padding: 10px; width: 95%; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { padding: 8px; font-size: 14px; }
+@media (max-width: 768px) {
+            #resources-list { margin-right: -30px; }
+            body { width: 100%; font-size: 12px;  margin-left: -30px;}
+            header { width: 100%; padding: 10px; font-size: 14px;  margin-left: 30px; }
+            section { padding: 10px; width: 100%; }
+            table { width: 120%; table-layout: fixed;  display: block; overflow-x: auto; white-space: normal; }
+            th:nth-child(1), td:nth-child(1) { width: 15%; } /* Date */
+            th:nth-child(2), td:nth-child(2) { width: 20%; } /* Worship Leader */
+            th:nth-child(3), td:nth-child(3) { width: 55%; } /* Songs */
+            th:nth-child(4), td:nth-child(4) { width: 15%; } /* Key */
+            th:nth-child(5), td:nth-child(5) { width: 15%; } /* Files */
             .pagination { flex-direction: column; gap: 5px; align-items: center; }
-            input, select { width: 100%; padding: 8px; font-size: 16px; }
-            button { padding: 10px; font-size: 16px; }
+            input, select { width: 100%; padding: 10px; font-size: 16px; }
+            button { padding: 10px; font-size: 12px; }
         }
-    @media (max-width: 768px) {
-        #resources-list { font-size: 14px; margin-right: 20px; }
-        #resources-list { font-size: 14px; }
-        table { width: 100%; table-layout: fixed; }
-        th:nth-child(1), td:nth-child(1) { width: 15%; } /* Date */
-        th:nth-child(2), td:nth-child(2) { width: 20%; } /* Worship Leader */
-        th:nth-child(3), td:nth-child(3) { width: 35%; } /* Songs */
-        th:nth-child(4), td:nth-child(4) { width: 15%; } /* Key */
-        th:nth-child(5), td:nth-child(5) { width: 15%; } /* Files */
-    }
     </style>
     <script>
         let currentPage = 1;
@@ -224,8 +217,7 @@
         
         <ul id="resources-list" style="line-height: 1.8;">
         <li>Loading resources...</li>
-        <li><a href='https://towag.org/song_database/' target='_blank'>TOW Song Database</a></li>
-</ul>
+    </ul>
     <script>
         async function fetchResourceFolders(pageToken = "") {
             const resourceFolderId = "1jvXm4TKxbRFtBdpO4awvsr7UMe_flDL6";
@@ -264,7 +256,7 @@
                     "敬拜团乐手指南 LSC Musicians Guideline",
                     "约书亚乐团歌谱 Joshua Band OFFICIAL CHORDS",
                     "赞美之泉歌谱 Stream of Praise OFFICIAL CHORDS",
-                    "赞美之泉敬拜工作坊 Stream of Praise Worship Workshop",
+                    "赞美之泉敬拜工作坊 Stream of Praise WORKSHOP",
                     "Muititrack.com CHORDS"
                 ];
                 
