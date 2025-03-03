@@ -217,8 +217,7 @@
         
         <ul id="resources-list" style="line-height: 1.8;">
         <li>Loading resources...</li>
-        <li><a href='https://towag.org/song_database/' target='_blank'>TOW Song Database</a></li>
-</ul>
+    </ul>
     <script>
         async function fetchResourceFolders(pageToken = "") {
             const resourceFolderId = "1jvXm4TKxbRFtBdpO4awvsr7UMe_flDL6";
@@ -258,8 +257,7 @@
                     "约书亚乐团歌谱 Joshua Band OFFICIAL CHORDS",
                     "赞美之泉歌谱 Stream of Praise OFFICIAL CHORDS",
                     "赞美之泉敬拜工作坊 Stream of Praise WORKSHOP",
-                    "Muititrack.com CHORDS",
-                    "TOW Song Database"
+                    "Muititrack.com CHORDS"
                 ];
                 
                 let resourceMap = new Map();
@@ -278,6 +276,8 @@
                 
                 if (resourceMap.size === 0) {
                     resourceList.innerHTML = `<li>No resources available.</li>`;
+                }
+                resourceList.insertAdjacentHTML("beforeend", `<li><a href='https://towag.org/song_database/' target='_blank'>TOW Song Database</a></li>`);
                 }
                 
                 pageToken = data.nextPageToken || "";
