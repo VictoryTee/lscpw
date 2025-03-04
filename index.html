@@ -32,7 +32,7 @@
             button { padding: 10px; font-size: 12px; }
         }
     </style>
-     <script>
+    <script>
         let currentPage = 1;
         const rowsPerPage = 30;
         let allRows = [];
@@ -94,7 +94,7 @@
                     }
                 });
                 pageToken = data.nextPageToken || "";
-} while (pageToken);
+            } while (pageToken);
             
             expectedDates.forEach(date => {
                 if (!foundDates.has(date)) {
@@ -212,17 +212,20 @@
             <button onclick="changePage(1)">Next</button>
         </div>
     </section>
-    <section id="resources" style="text-align: left; padding-left: 10%; width: 80%;">
+  <section id="resources" style="text-align: left; padding-left: 10%; width: 80%;">
         <h2>Resources</h2>
-        
         <ul id="resources-list" style="line-height: 1.8;">
-        <li>Loading resources...</li>
-        <li><a href='https://towag.org/song_database/' target='_blank'>TOW Song Database</a></li>
-</ul>
+            <li>Loading resources...</li>
+        </ul>
+        <ul>
+            <li><a href="https://towag.org/song_database/" target="_blank">TOW Song Database</a></li>
+        </ul>
+    </section>
+    
     <script>
         async function fetchResourceFolders(pageToken = "") {
             const resourceFolderId = "1jvXm4TKxbRFtBdpO4awvsr7UMe_flDL6";
-            const apiKey = "AIzaSyA2kkxGc88rl6rEBNYhkV2ttX4NB-c2Fcw";
+            const apiKey = "AIzaSyAtFaPy5bYXVKep-nV3bDjKjF8Tzaq2O8o";
             let driveUrl = `https://www.googleapis.com/drive/v3/files?q='${resourceFolderId}' in parents and mimeType='application/vnd.google-apps.folder'&key=${apiKey}&fields=files(id,name),nextPageToken`;
             if (pageToken) driveUrl += `&pageToken=${pageToken}`;
             
@@ -257,8 +260,8 @@
                     "敬拜团乐手指南 LSC Musicians Guideline",
                     "约书亚乐团歌谱 Joshua Band OFFICIAL CHORDS",
                     "赞美之泉歌谱 Stream of Praise OFFICIAL CHORDS",
-                    "赞美之泉敬拜工作坊 Stream of Praise Worship Workshop",
-                    "Muititrack.com CHORDS"
+                    "赞美之泉敬拜工作坊 Stream of Praise WORKSHOP",
+                    "Muititrack.com CHORDS", "TOW Song Database"
                 ];
                 
                 let resourceMap = new Map();
@@ -276,24 +279,7 @@
                 });
                 
                 if (resourceMap.size === 0) {
-    resourceList.innerHTML = `<li>No resources available.</li>`;
-} else {
-    orderedResources.forEach(name => {
-        if (resourceMap.has(name)) {
-            resourceList.insertAdjacentHTML("beforeend", `<li><a href='https://drive.google.com/drive/folders/${resourceMap.get(name)}' target='_blank'>${name}</a></li>`);
-        }
-    });
-}
-
-
-                } else {
-                    orderedResources.forEach(name => {
-                        if (resourceMap.has(name)) {
-                            resourceList.insertAdjacentHTML("beforeend", `<li><a href='https://drive.google.com/drive/folders/${resourceMap.get(name)}' target='_blank'>${name}</a></li>`);
-                        }
-                    });
-                }
-                resourceList.insertAdjacentHTML("beforeend", `<li><a href='https://towag.org/song_database/' target='_blank'>TOW Song Database</a></li>`);
+                    resourceList.innerHTML = `<li>No resources available.</li>`;
                 }
                 
                 pageToken = data.nextPageToken || "";
@@ -302,8 +288,6 @@
         
         document.addEventListener("DOMContentLoaded", getResourceFolders);
     </script>
-    </section>
 </body>
 </html>
-
 
