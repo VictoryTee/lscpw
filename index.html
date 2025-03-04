@@ -277,15 +277,6 @@
                 
                 if (resourceMap.size === 0) {
     resourceList.innerHTML = `<li>No resources available.</li>`;
-} else {
-    orderedResources.forEach(name => {
-        if (resourceMap.has(name)) {
-            resourceList.insertAdjacentHTML("beforeend", `<li><a href='https://drive.google.com/drive/folders/${resourceMap.get(name)}' target='_blank'>${name}</a></li>`);
-        }
-    });
-}
-resourceList.insertAdjacentHTML("beforeend", `<li><a href='https://towag.org/song_database/' target='_blank'>TOW Song Database</a></li>`);
-pageToken = data.nextPageToken || "";
 
                 } else {
                     orderedResources.forEach(name => {
