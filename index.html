@@ -257,7 +257,7 @@
                     "敬拜团乐手指南 LSC Musicians Guideline",
                     "约书亚乐团歌谱 Joshua Band OFFICIAL CHORDS",
                     "赞美之泉歌谱 Stream of Praise OFFICIAL CHORDS",
-                    "赞美之泉敬拜工作坊 Stream of Praise WORKSHOP",
+                    "赞美之泉敬拜工作坊 Stream of Praise Worship Workshop",
                     "Muititrack.com CHORDS"
                 ];
                 
@@ -275,17 +275,9 @@
                     }
                 });
                 
-                
                 if (resourceMap.size === 0) {
     resourceList.innerHTML = `<li>No resources available.</li>`;
-} else {
-    orderedResources.forEach(name => {
-        if (resourceMap.has(name)) {
-            resourceList.insertAdjacentHTML("beforeend", `<li><a href='https://drive.google.com/drive/folders/${resourceMap.get(name)}' target='_blank'>${name}</a></li>`);
-        }
-    });
-    
-}
+
                 } else {
                     orderedResources.forEach(name => {
                         if (resourceMap.has(name)) {
@@ -305,4 +297,5 @@
     </section>
 </body>
 </html>
+
 
